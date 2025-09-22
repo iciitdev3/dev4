@@ -67,6 +67,9 @@ export default function HomePage() {
                   <Button variant="ghost" onClick={() => router.push('/progress')}>
                     {t('progress')}
                   </Button>
+                  <Button variant="ghost" onClick={() => router.push('/settings')}>
+                    Settings
+                  </Button>
                 </nav>
               )}
               <LanguageToggle />

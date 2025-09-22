@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
+import { useEffect } from 'react';
+import { appStorage } from '../utils/localStorage';
 
 const LanguageContext = createContext();
 
@@ -472,7 +474,27 @@ const ru = {
 const translations = { en, ru };
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState('ru');
+  const [language, setLanguage] = useState('en'); // Default to English initially
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load saved language preference on mount
+  useEffect(() => {
+    const savedLanguage = appStorage.loadLanguage();
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ru')) {
+      setLanguage(savedLanguage);
+    } else {
+      // Default to Russian if no preference saved
+      setLanguage('ru');
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save language preference when it changes
+  useEffect(() => {
+    if (isLoaded) {
+      appStorage.saveLanguage(language);
+    }
+  }, [language, isLoaded]);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'ru' : 'en');
@@ -498,7 +520,7 @@ export function LanguageProvider({ children }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+    <LanguageContext.Provider value={{ language, toggleLanguage, t, isLoaded }}>
       {children}
     </LanguageContext.Provider>
   );

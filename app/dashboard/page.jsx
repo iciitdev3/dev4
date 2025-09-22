@@ -10,11 +10,17 @@ import { Brain, TrendingUp, Target, Clock, ArrowRight, Star } from 'lucide-react
 import { useApp } from '../../contexts/AppContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageToggle from '../../components/LanguageToggle';
+import LoadingScreen from '../../components/LoadingScreen';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { state } = useApp();
   const { t } = useLanguage();
+
+  // Show loading screen while data is being loaded
+  if (!state.dataLoaded) {
+    return <LoadingScreen />;
+  }
 
   if (!state.assessmentCompleted) {
     return (
@@ -65,6 +71,9 @@ export default function DashboardPage() {
               <nav className="flex space-x-4">
                 <Button variant="ghost" onClick={() => router.push('/progress')}>
                   {t('progress')}
+                </Button>
+                <Button variant="ghost" onClick={() => router.push('/settings')}>
+                  Settings
                 </Button>
                 <Button variant="ghost" onClick={() => router.push('/')}>
                   {t('home')}

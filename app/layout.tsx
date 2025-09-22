@@ -1,8 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Suspense } from 'react';
 import { AppProvider } from '../contexts/AppContext';
 import { LanguageProvider } from '../contexts/LanguageContext';
+import LoadingScreen from '../components/LoadingScreen';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +23,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <AppProvider>
-            {children}
+            <Suspense fallback={<LoadingScreen />}>
+              {children}
+            </Suspense>
           </AppProvider>
         </LanguageProvider>
       </body>

@@ -19,6 +19,7 @@ export default function AssessmentPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selectedOption, setSelectedOption] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentQuestion = mockAssessmentQuestions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / mockAssessmentQuestions.length) * 100;
@@ -62,6 +63,8 @@ export default function AssessmentPage() {
   };
 
   const completeAssessment = (finalAnswers) => {
+    setIsSubmitting(true);
+    
     // Calculate average scores for each skill
     const skillScores = {};
     
@@ -95,8 +98,10 @@ export default function AssessmentPage() {
       }
     });
 
-    // Navigate to results/dashboard
-    router.push('/dashboard');
+    // Navigate to results/dashboard with slight delay to ensure save
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 500);
   };
 
   return (
@@ -187,10 +192,12 @@ export default function AssessmentPage() {
             
             <Button
               onClick={handleNext}
-              disabled={selectedOption === ''}
+              disabled={selectedOption === '' || isSubmitting}
               className="flex items-center space-x-2 bg-gradient-to-r from-[#6495ED] to-blue-600 hover:from-blue-600 hover:to-[#6495ED] text-white px-6"
             >
-              <span>{isLastQuestion ? t('completeAssessment') : t('next')}</span>
+              <span>
+                {isSubmitting ? 'Saving...' : isLastQuestion ? t('completeAssessment') : t('next')}
+              </span>
               {!isLastQuestion && <ArrowRight className="h-4 w-4" />}
             </Button>
           </div>
